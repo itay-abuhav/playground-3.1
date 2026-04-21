@@ -93,7 +93,31 @@
   }
   /* 3-panel layout: Studio (left) · Agent (middle, fixed) · Inference (right, hidden by default) */
   .panel.backend  { flex: 1 1 0; order: 1; border-right: 1px solid var(--border); }
-  .panel.apollo   { flex: 0 0 420px; background: var(--panel); order: 2; }
+  .panel.apollo   { flex: 0 0 420px; background: var(--panel); order: 2; position: relative; }
+
+  /* Drag handle on the left edge of the Agent panel */
+  .resizer {
+    position: absolute;
+    top: 0; left: -3px;
+    width: 6px; height: 100%;
+    cursor: ew-resize;
+    background: transparent;
+    z-index: 20;
+    transition: background .15s ease;
+  }
+  .resizer::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px; height: 32px;
+    background: transparent;
+    border-radius: 1px;
+    transition: background .15s ease;
+  }
+  .resizer:hover::before,
+  .resizer.dragging::before { background: var(--purple); }
+  body.resizing { cursor: ew-resize !important; user-select: none; }
   .panel.inference-panel {
     flex: 0 0 0; order: 3;
     background: var(--panel);
@@ -123,13 +147,7 @@
   .header-row + .header-row {
     border-top: 1px solid var(--border-soft);
   }
-  .inference-row, .sysprompt-row { display: none; }
-  .backend.section-inference .inference-row { display: flex; }
-  .backend.section-sysprompt .sysprompt-row { display: flex; }
-  .backend.chat-mode .inference-row,
-  .backend.chat-mode .sysprompt-row { display: none; }
-  .backend.view-code .inference-row,
-  .backend.view-code .sysprompt-row { display: none; }
+  /* (sysprompt-row / inference-row rules removed — single-row header now) */
   .breadcrumb { display: flex; align-items: center; gap: 10px; }
   .pill {
     display: inline-flex; align-items: center;
@@ -805,14 +823,17 @@
     <!-- BACKEND PANEL -->
     <div class="panel backend chat-mode" id="backend">
 
-      <!-- Header: two-row breadcrumb + segmented toggle -->
+      <!-- Header: single row — SYSTEM PROMPT / sub-tabs + Chat|UI|Code -->
       <div class="backend-header">
-        <!-- Row 1: top-level hierarchy (always visible) -->
         <div class="header-row">
           <div class="breadcrumb">
-            <span class="pill">APOLLO-1 STUDIO</span>
+            <span class="pill">SYSTEM PROMPT</span>
             <span class="crumb-slash">/</span>
-            <span class="crumb-pill" data-section="sysprompt">System Prompt</span>
+            <span class="pill filled">Settings</span>
+            <span class="crumb-text dim clickable">Tools</span>
+            <span class="crumb-text dim clickable">Business Rules</span>
+            <span class="crumb-text dim clickable">Ontology</span>
+            <span class="crumb-text dim clickable">Integrations</span>
           </div>
           <div class="header-right">
             <div class="segmented" id="segmented">
@@ -822,20 +843,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Row 2: sysprompt sub-nav (only when System Prompt is active) -->
-        <div class="header-row sysprompt-row">
-          <div class="breadcrumb">
-            <span class="pill">SOURCE</span>
-            <span class="crumb-slash">/</span>
-            <span class="pill filled">Settings</span>
-            <span class="crumb-text dim clickable">Tools</span>
-            <span class="crumb-text dim clickable">Business Rules</span>
-            <span class="crumb-text dim clickable">Ontology</span>
-            <span class="crumb-text dim clickable">Integrations</span>
-          </div>
-        </div>
-
       </div>
 
       <!-- ============ CHAT VIEW (System Prompt) ============ -->
@@ -1040,7 +1047,8 @@
     </div>
 
     <!-- APOLLO PANEL -->
-    <div class="panel apollo">
+    <div class="panel apollo" id="agentPanel">
+      <div class="resizer" id="agentResizer" title="Drag to resize · double-click to reset"></div>
       <div class="apollo-header">
         <span class="pill filled">AGENT</span>
         <div class="apollo-size">Medium <span class="chev">▾</span></div>
@@ -1407,6 +1415,47 @@
     });
 
   syncStudio();
+
+  // ==== Agent panel: drag-to-resize (left edge) ==== //
+  const agentPanel   = document.getElementById('agentPanel');
+  const agentResizer = document.getElementById('agentResizer');
+  const AGENT_DEFAULT = 420; // px — matches CSS
+  const AGENT_MIN = 280;
+  const AGENT_MAX_VW = 0.65; // never more than 65% of viewport
+
+  let dragging = false;
+  let startX = 0;
+  let startWidth = 0;
+
+  agentResizer.addEventListener('mousedown', (e) => {
+    dragging = true;
+    startX = e.clientX;
+    startWidth = agentPanel.getBoundingClientRect().width;
+    agentResizer.classList.add('dragging');
+    document.body.classList.add('resizing');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    // Left-edge handle: dragging LEFT grows the panel, RIGHT shrinks it
+    const delta = startX - e.clientX;
+    const max = Math.round(window.innerWidth * AGENT_MAX_VW);
+    const next = Math.max(AGENT_MIN, Math.min(max, startWidth + delta));
+    agentPanel.style.flexBasis = next + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    agentResizer.classList.remove('dragging');
+    document.body.classList.remove('resizing');
+  });
+
+  // Double-click resets to default width
+  agentResizer.addEventListener('dblclick', () => {
+    agentPanel.style.flexBasis = AGENT_DEFAULT + 'px';
+  });
 </script>
 </body>
 </html>
