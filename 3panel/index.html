@@ -93,7 +93,7 @@
   }
   /* 3-panel layout: Studio (left) · Agent (middle, fixed) · Inference (right, hidden by default) */
   .panel.backend  { flex: 1 1 0; order: 1; border-right: 1px solid var(--border); }
-  .panel.apollo   { flex: 0 0 420px; background: var(--panel); order: 2; position: relative; }
+  .panel.apollo   { flex: 0 0 38%; background: var(--panel); order: 2; position: relative; }
 
   /* Drag handle on the left edge of the Agent panel */
   .resizer {
@@ -859,7 +859,7 @@
           <div class="sparkle">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.5L19 9l-5.2 1.5L12 16l-1.8-5.5L5 9l5.2-1.5L12 2zM19 14l.8 2.4L22 17l-2.2.6L19 20l-.8-2.4L16 17l2.2-.6L19 14z"/></svg>
           </div>
-          <div class="msg">Add, change, or ask about your agent's business logic</div>
+          <div class="msg" id="studio-chat-msg">Add, change, or ask about your agent's business logic</div>
         </div>
 
         <div class="chat-suggestions">
@@ -1375,10 +1375,12 @@
   const studioChips = document.getElementById('studio-chat-chips');
   const studioHint  = document.getElementById('studio-chat-hint');
   const studioTag   = document.getElementById('studio-chat-tag');
+  const studioMsg   = document.getElementById('studio-chat-msg');
 
   const defaultChips = studioChips.innerHTML;
   const defaultTag   = studioTag.innerHTML;
   const defaultHint  = studioHint.textContent;
+  const defaultMsg   = studioMsg.textContent;
 
   const interactionChips = [
     "Add a tool to fetch transaction history",
@@ -1392,11 +1394,13 @@
       .map(t => `<div class="chip">${t}</div>`).join('');
     studioTag.innerHTML = '# Transaction Dispute <span class="x">✕</span>';
     studioTag.querySelector('.x').addEventListener('click', resetSuggestions);
+    studioMsg.textContent = "Ask about Apollo-1's reasoning on this turn — or adjust the logic behind it.";
   }
 
   function resetSuggestions() {
     studioHint.textContent = defaultHint;
     studioChips.innerHTML = defaultChips;
+    studioMsg.textContent = defaultMsg;
     studioTag.innerHTML = defaultTag;
   }
 
@@ -1419,7 +1423,6 @@
   // ==== Agent panel: drag-to-resize (left edge) ==== //
   const agentPanel   = document.getElementById('agentPanel');
   const agentResizer = document.getElementById('agentResizer');
-  const AGENT_DEFAULT = 420; // px — matches CSS
   const AGENT_MIN = 280;
   const AGENT_MAX_VW = 0.65; // never more than 65% of viewport
 
@@ -1452,9 +1455,9 @@
     document.body.classList.remove('resizing');
   });
 
-  // Double-click resets to default width
+  // Double-click resets to default ratio (from CSS)
   agentResizer.addEventListener('dblclick', () => {
-    agentPanel.style.flexBasis = AGENT_DEFAULT + 'px';
+    agentPanel.style.flexBasis = '';
   });
 </script>
 </body>
