@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Apollo Playground — Mockups</title>
+<style>
+  :root {
+    --bg: #0f1013;
+    --fg: #ececf1;
+    --muted: #8a8d98;
+    --card: #17181d;
+    --border: #2a2c33;
+    --accent: #8b5cf6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif; }
+  main { max-width: 820px; margin: 0 auto; padding: 80px 24px 64px; }
+  h1 { font-size: 28px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 15px; margin: 0 0 40px; }
+  .grid { display: grid; gap: 14px; }
+  a.card {
+    display: block;
+    padding: 20px 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color 120ms, transform 120ms;
+  }
+  a.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .card-title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+  .card-desc { color: var(--muted); font-size: 14px; margin: 0; }
+  .tag { display: inline-block; font-size: 11px; color: var(--accent); border: 1px solid var(--accent); padding: 1px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.04em; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Apollo Playground — Mockups</h1>
+  <p class="sub">Three wireframe-level mockups of the Apollo-1 Studio playground layout. Click through to review.</p>
+
+  <div class="grid">
+    <a class="card" href="v3.1/">
+      <p class="card-title">v3.1 — Two-panel <span class="tag">current</span></p>
+      <p class="card-desc">Agent on the left · Apollo-1 Studio on the right, with Chat | UI | Code toggle.</p>
+    </a>
+    <a class="card" href="3panel/">
+      <p class="card-title">v3.1 — Three-panel</p>
+      <p class="card-desc">Earlier three-panel layout: business rules chat · system-prompt editor · Apollo thread.</p>
+    </a>
+    <a class="card" href="v4/">
+      <p class="card-title">v4 — Next iteration</p>
+      <p class="card-desc">Updated mockup building on v3.1.</p>
+    </a>
+  </div>
+
+  <footer>Static HTML mockups. No build step, no dependencies.</footer>
+</main>
+</body>
+</html>
