@@ -26,8 +26,8 @@
     font-family: ui-sans-serif, -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif;
     font-size: 13px; }
 
-  /* ===== Light mode (scoped to backend + inference panels) ===== */
-  .backend.light-mode,
+  /* ===== Light mode (scoped to apollo/agent + inference panels) ===== */
+  .apollo.light-mode,
   .inference-panel.light-mode {
     --bg: #ffffff;
     --panel: #ffffff;
@@ -46,27 +46,16 @@
     background: var(--bg);
     color: var(--text);
   }
-  .backend.light-mode .segmented button.active,
-  .inference-panel.light-mode .segmented button.active { background: rgba(111, 91, 208, 0.14); }
-  .backend.light-mode .ft-item.active { background: #ece7ff; color: var(--text); }
-  .backend.light-mode .editor,
+  .apollo.light-mode .bubble.user { background: #f0eefb; border-color: var(--border); color: var(--text); }
+  .apollo.light-mode .bubble.agent { color: var(--text); }
+  .inference-panel.light-mode .pill.count { background: #ece7ff; color: var(--purple); }
   .inference-panel.light-mode .editor { background: #fafafa; }
-  .backend.light-mode .editor-tab.active,
   .inference-panel.light-mode .editor-tab.active { background: #ece7ff; color: var(--text); }
-  .backend.light-mode .code-content,
   .inference-panel.light-mode .code-content { color: #1f1f23; }
-  .backend.light-mode .code-content .k,
   .inference-panel.light-mode .code-content .k { color: #8250df; }
-  .backend.light-mode .code-content .s,
   .inference-panel.light-mode .code-content .s { color: #0a7d44; }
-  .backend.light-mode .code-content .b,
   .inference-panel.light-mode .code-content .b { color: #6b6b76; }
-  .backend.light-mode .code-content .p,
   .inference-panel.light-mode .code-content .p { color: #9a9aa5; }
-  .backend.light-mode .chat-tabs .new-chat:hover { border-color: #d0d0d6; }
-  .backend.light-mode .chip:hover,
-  .inference-panel.light-mode .chip:hover { border-color: #c9c9d0; }
-  .backend.light-mode .trace-btn,
   .inference-panel.light-mode .trace-btn { background: var(--panel-2); border-color: var(--border); color: var(--text-dim); }
 
   /* ===== Top bar ===== */
@@ -877,7 +866,7 @@
   <div class="panels">
 
     <!-- BACKEND PANEL -->
-    <div class="panel backend chat-mode light-mode" id="backend">
+    <div class="panel backend chat-mode" id="backend">
 
       <!-- Header: row 1 = SYSTEM PROMPT + View|Chat · row 2 = sub-tabs + UI|Code (hidden in Chat) -->
       <div class="backend-header">
@@ -1111,7 +1100,7 @@
     </div>
 
     <!-- APOLLO PANEL -->
-    <div class="panel apollo" id="agentPanel">
+    <div class="panel apollo light-mode" id="agentPanel">
       <div class="resizer" id="agentResizer" title="Drag to resize · double-click to reset"></div>
       <div class="apollo-header">
         <span class="pill filled">AGENT</span>
