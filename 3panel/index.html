@@ -26,6 +26,49 @@
     font-family: ui-sans-serif, -apple-system, "SF Pro Text", "Inter", system-ui, sans-serif;
     font-size: 13px; }
 
+  /* ===== Light mode (scoped to backend + inference panels) ===== */
+  .backend.light-mode,
+  .inference-panel.light-mode {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #f5f5f7;
+    --border: #e4e4e7;
+    --border-soft: #ececee;
+    --text: #1f1f23;
+    --text-dim: #6b6b76;
+    --text-faint: #9a9aa5;
+    --purple: #6f5bd0;
+    --purple-soft: #8b7ae6;
+    --purple-bg: #ece7ff;
+    --chip: #f5f5f7;
+    --chip-border: #e4e4e7;
+    --accent-border: #c8bcf5;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .backend.light-mode .segmented button.active,
+  .inference-panel.light-mode .segmented button.active { background: rgba(111, 91, 208, 0.14); }
+  .backend.light-mode .ft-item.active { background: #ece7ff; color: var(--text); }
+  .backend.light-mode .editor,
+  .inference-panel.light-mode .editor { background: #fafafa; }
+  .backend.light-mode .editor-tab.active,
+  .inference-panel.light-mode .editor-tab.active { background: #ece7ff; color: var(--text); }
+  .backend.light-mode .code-content,
+  .inference-panel.light-mode .code-content { color: #1f1f23; }
+  .backend.light-mode .code-content .k,
+  .inference-panel.light-mode .code-content .k { color: #8250df; }
+  .backend.light-mode .code-content .s,
+  .inference-panel.light-mode .code-content .s { color: #0a7d44; }
+  .backend.light-mode .code-content .b,
+  .inference-panel.light-mode .code-content .b { color: #6b6b76; }
+  .backend.light-mode .code-content .p,
+  .inference-panel.light-mode .code-content .p { color: #9a9aa5; }
+  .backend.light-mode .chat-tabs .new-chat:hover { border-color: #d0d0d6; }
+  .backend.light-mode .chip:hover,
+  .inference-panel.light-mode .chip:hover { border-color: #c9c9d0; }
+  .backend.light-mode .trace-btn,
+  .inference-panel.light-mode .trace-btn { background: var(--panel-2); border-color: var(--border); color: var(--text-dim); }
+
   /* ===== Top bar ===== */
   .topbar {
     height: 44px;
@@ -834,7 +877,7 @@
   <div class="panels">
 
     <!-- BACKEND PANEL -->
-    <div class="panel backend chat-mode" id="backend">
+    <div class="panel backend chat-mode light-mode" id="backend">
 
       <!-- Header: row 1 = SYSTEM PROMPT + View|Chat · row 2 = sub-tabs + UI|Code (hidden in Chat) -->
       <div class="backend-header">
@@ -1146,7 +1189,7 @@
     <!-- ============================================================ -->
     <!-- INFERENCE PANEL (right, hidden by default)                    -->
     <!-- ============================================================ -->
-    <div class="panel inference-panel" id="inferencePanel">
+    <div class="panel inference-panel light-mode" id="inferencePanel">
 
       <!-- Header -->
       <div class="backend-header">
