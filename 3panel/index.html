@@ -147,8 +147,7 @@
   .header-row + .header-row {
     border-top: 1px solid var(--border-soft);
   }
-  .backend.view-chat .sub-nav-row,
-  .backend.view-code .sub-nav-row { display: none; }
+  .backend.view-chat .sub-nav-row { display: none; }
   /* (sysprompt-row / inference-row rules removed — single-row header now) */
   .breadcrumb { display: flex; align-items: center; gap: 10px; }
   .pill {
@@ -837,17 +836,16 @@
     <!-- BACKEND PANEL -->
     <div class="panel backend chat-mode" id="backend">
 
-      <!-- Header: row 1 = SYSTEM PROMPT + Chat|UI|Code · row 2 = sub-tabs (hidden in Chat/Code) -->
+      <!-- Header: row 1 = SYSTEM PROMPT + View|Chat · row 2 = sub-tabs + UI|Code (hidden in Chat) -->
       <div class="backend-header">
         <div class="header-row">
           <div class="breadcrumb">
             <span class="pill">SYSTEM PROMPT</span>
           </div>
           <div class="header-right">
-            <div class="segmented" id="segmented">
-              <button data-view="chat">Chat</button>
-              <button data-view="ui" class="active">UI</button>
-              <button data-view="code">Code</button>
+            <div class="segmented" id="segmentedTop">
+              <button data-top="view" class="active">View</button>
+              <button data-top="chat">Chat</button>
             </div>
           </div>
         </div>
@@ -858,6 +856,12 @@
             <span class="crumb-text dim clickable">Business Rules</span>
             <span class="crumb-text dim clickable">Ontology</span>
             <span class="crumb-text dim clickable">Integrations</span>
+          </div>
+          <div class="header-right">
+            <div class="segmented" id="segmented">
+              <button data-view="ui" class="active">UI</button>
+              <button data-view="code">Code</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1328,10 +1332,12 @@
 <script>
   // ==== Studio panel (System Prompt only) ==== //
   const seg = document.getElementById('segmented');
+  const segTop = document.getElementById('segmentedTop');
   const backend = document.getElementById('backend');
   const views = document.querySelectorAll('.view');
 
   let currentView = 'ui';
+  let lastInnerView = 'ui'; // remembers ui/code so View toggle restores it
   const currentSection = 'sysprompt'; // locked — Studio only hosts System Prompt now
 
   function syncStudio() {
@@ -1344,13 +1350,32 @@
     backend.classList.toggle('view-ui', currentView === 'ui');
     backend.classList.toggle('view-code', currentView === 'code');
     backend.classList.add('section-sysprompt');
+
+    segTop.querySelectorAll('button').forEach(b => {
+      const isChat = currentView === 'chat';
+      b.classList.toggle('active', (b.dataset.top === 'chat') === isChat);
+    });
+    seg.querySelectorAll('button').forEach(b =>
+      b.classList.toggle('active', b.dataset.view === currentView));
   }
+
+  segTop.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.dataset.top === 'chat') {
+      if (currentView !== 'chat') lastInnerView = currentView;
+      currentView = 'chat';
+    } else {
+      currentView = lastInnerView || 'ui';
+    }
+    syncStudio();
+  });
 
   seg.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
     currentView = btn.dataset.view;
-    seg.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+    lastInnerView = currentView;
     syncStudio();
   });
 
@@ -1418,9 +1443,8 @@
   }
 
   function switchStudioView(view) {
+    if (view === 'chat' && currentView !== 'chat') lastInnerView = currentView;
     currentView = view;
-    seg.querySelectorAll('button')
-      .forEach(b => b.classList.toggle('active', b.dataset.view === view));
     syncStudio();
   }
 
